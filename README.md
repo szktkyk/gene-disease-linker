@@ -25,12 +25,12 @@ Prioritize candidate genes by bibliome analysis
 
 
 ## How to use
-1. `python 01_pfocr2ensg.py "the disease keyword" "0 or 2 (0 for search titles, 2 for search taxonomy name)"`
-2. `python 02_rnadisease2ensg.py "DOID" "(int) score (Annotation score between 0 and 1.)"`
-3. `python 03_mirtex2ensg.py "the disease keyword"`
-4. `python 04_disgenet2ensg.py "ncit disease term" "score (to filter genes)"`
-5. `python 05_pubchem2ensg.py "pubchem disease ID"`
-6. `python 06_RankingGenes.py "path to your text file including a list of genes" "output_filename"`
+1. python 01_pfocr2ensg.py *the disease keyword* *0 or 2 (0 for search titles, 2 for search taxonomy name)*
+2. python 02_rnadisease2ensg.py *DOID* *(int) score (Annotation score between 0 and 1.)*
+3. python 03_mirtex2ensg.py *the disease keyword*
+4. python 04_disgenet2ensg.py *ncit disease term* *score (to filter genes)*
+5. python 05_pubchem2ensg.py *pubchem disease ID*
+6. python 06_RankingGenes.py *path to your text file including a list of genes* *output_filename*
 
 
 
