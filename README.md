@@ -35,9 +35,11 @@ Prioritize candidate genes by bibliome analysis
 
 
 ## Example
-1. `time python -u 01_pfocr2ensg.py "parkinson" 0 2>&1 | tee ./log/pfocr_log.txt`
-2. `time python -u 02_rnadisease2ensg.py "14330" 0.65 2>&1 | tee ./log/rnadisease_log.txt` 
-3. `time python -u 03_mirtex2ensg.py "parkinson" 2>&1 | tee ./log/mirtex_log.txt`
-4. `time python -u 04_disgenet2ensg.py xxxxxxxx 2>&1 | tee ./log/disgenet_log.txt`
-5. `time python -u 05_pubchem2ensg.py "DZID8805" 2>&1 | tee ./log/pubchem_log.txt`
-6. `time python -u 06_RankingGenes.py "./" "parkinson_bibliome" 2>&1 | tee ./log/rankgenes_log.txt`
+```
+python -u 01_pfocr2ensg.py "parkinson" 0 2>&1 | tee ./log/pfocr_log.txt
+python -u 02_rnadisease2ensg.py "14330" 0.65 2>&1 | tee ./log/rnadisease_log.txt` 
+python -u 03_mirtex2ensg.py "parkinson" 2>&1 | tee ./log/mirtex_log.txt`
+python -u 04_disgenet2ensg.py xxxxxxxx 2>&1 | tee ./log/disgenet_log.txt`
+python -u 05_pubchem2ensg.py "DZID8805" 2>&1 | tee ./log/pubchem_log.txt`
+python -u 06_RankingGenes.py "./" "parkinson_bibliome" 2>&1 | tee ./log/rankgenes_log.txt`
+```
