@@ -1,9 +1,9 @@
 from SPARQLWrapper import SPARQLWrapper
 import requests
 
-def disgenet2list(dcterm,score,limit):
+def disgenet2list(dctermID,score,limit):
     """
-    dcterm: disease name defined in ncit
+    dctermID: disease ID defined in ncit
     score: threshold of score
     limit: limit of the number of pmids for each gene
     """
@@ -15,8 +15,8 @@ def disgenet2list(dcterm,score,limit):
                 sio:SIO_000216 ?scoreIRI . 
             ?gene rdf:type ncit:C16612 ;
                 dcterms:title ?geneName . 
-            ?disease rdf:type ncit:C7057 ; 
-                dcterms:title "{dcterm}"@en . 
+            ?disease rdf:type ncit:C7057 
+                FILTER (?disease=<http://linkedlifedata.com/resource/umls/id/{dctermID}>) . 
             ?scoreIRI sio:SIO_000300 ?score . 
             FILTER (?score >= {score}) 
         }} ORDER BY DESC(?score)
@@ -33,12 +33,12 @@ def disgenet2list(dcterm,score,limit):
         print(f"gene: {gene}")
         query_pmid = f"""        
             SELECT DISTINCT ?gda
-            <http://linkedlifedata.com/resource/umls/id/C0030567> as ?disease
+            <http://linkedlifedata.com/resource/umls/id/{dctermID}> as ?disease
             <{gene}> as ?gene 
             ?score ?source ?associationType	?pmid  ?sentence
             WHERE {{
                 ?gda sio:SIO_000628
-                    <http://linkedlifedata.com/resource/umls/id/C0030567>,
+                    <http://linkedlifedata.com/resource/umls/id/{dctermID}>,
                     <{gene}> ;
                     rdf:type ?associationType ;
                     sio:SIO_000216 ?scoreIRI ;

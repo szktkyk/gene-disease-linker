@@ -15,9 +15,15 @@ def main():
     """
     if not os.path.exists(f"./results"):
         os.mkdir(f"./results")
-    pubchem_list = pubchem.pubchem2list("DZID8805")
+    pubchem_list = pubchem.pubchem2list(args.pubchem_diseaseID)
     print(pubchem_list)
-    df = pd.DataFrame(pubchem_list)
+    pubchem_list2 = []
+    for i in pubchem_list:
+        if i["PMID_PMCID"] != "":
+            pubchem_list2.append(i)
+        else:
+            pass
+    df = pd.DataFrame(pubchem_list2)
     df.to_csv(f"./results/pubchem_genes.tsv",sep="\t",index=False)
 
 if __name__ == "__main__":

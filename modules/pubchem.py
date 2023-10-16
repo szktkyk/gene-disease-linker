@@ -27,7 +27,7 @@ def pubchem2list(pubchem_diseaseID):
     results = sparql.query().convert()
     for r in results["results"]["bindings"]:
         gene_list.append(r["gene"]["value"])
-    print(len(gene_list))
+    print(f"the number of genes:{len(gene_list)}")
 
     pre_list = []
     for gene in gene_list:
@@ -44,7 +44,7 @@ def pubchem2list(pubchem_diseaseID):
         FROM <http://rdf.ncbi.nlm.nih.gov/pubchem/reference>
         WHERE {{
         ?ref pcvocab:discussesAsDerivedByTextMining <{gene}> .
-        ?ref pcvocab:discussesAsDerivedByTextMining disease:DZID8805 .
+        ?ref pcvocab:discussesAsDerivedByTextMining disease:{pubchem_diseaseID} .
         ?ref dcterms:identifier ?pmid .
         FILTER (STRSTARTS(STR(?pmid), "https://pubmed.ncbi.nlm.nih.gov/") && !CONTAINS(STR(?pmid), "PMC"))
         }}
@@ -63,7 +63,7 @@ def pubchem2list(pubchem_diseaseID):
         pmids = ",".join(pmid_tmp_list)
 
         geneid = gene.split('/pubchem/gene/')[-1]
-        print(geneid)
+        # print(geneid)
         r = requests.post(
         url='https://biit.cs.ut.ee/gprofiler/api/convert/convert/',
         json={
@@ -78,6 +78,7 @@ def pubchem2list(pubchem_diseaseID):
                 pre_list.append({"gene":result['converted'],"PMID_PMCID":pmids,"evidence":"PubChem"})
                 print({"gene":result['converted'],"PMID_PMCID":pmids,"evidence":"PubChem"})
             else:
+                print("No ENSG")
                 continue
 
     return pre_list

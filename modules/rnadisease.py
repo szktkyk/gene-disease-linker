@@ -11,17 +11,17 @@ import xml.etree.ElementTree as ET
 
 def download_file():
     print("RNADisease source data is downloading...")
-    outputpath = "./src/rnadisease.zip"
+    outputpath = "./results/rnadisease.zip"
     url = "http://www.rnadisease.org/static/download/RNADiseasev4.0_RNA-disease_experiment_all.zip"
     try:
         response = requests.get(url)
         if response.status_code == 200:
             with open(outputpath, 'wb') as file:
                 file.write(response.content)           
-            with zipfile.ZipFile("./src/rnadisease.zip") as existing_zip:
-                existing_zip.extractall("./src/rnadisease")
+            with zipfile.ZipFile("./results/rnadisease.zip") as existing_zip:
+                existing_zip.extractall("./results/rnadisease")
                 # delete the zip file  
-                os.remove("./src/rnadisease.zip")
+                os.remove("./results/rnadisease.zip")
                 print(f"Downloaded {url} to {outputpath}")
         else:
             print(f"Failed to download. Status code: {response.status_code}")
@@ -30,8 +30,8 @@ def download_file():
     
 
 def convert_xlsx_to_csv():
-    xlsx_file = "./src/rnadisease/RNADiseasev4.0_RNA-disease_experiment_all.xlsx"  
-    csv_file = "./src/rnadisease/rnadisease.csv"  
+    xlsx_file = "./results/rnadisease/RNADiseasev4.0_RNA-disease_experiment_all.xlsx"  
+    csv_file = "./results/rnadisease/rnadisease.csv"  
     try:
         df = pd.read_excel(xlsx_file)
         df.to_csv(csv_file, index=False)
@@ -45,7 +45,7 @@ def rnadisease2genes(DOID, score):
     """
     """
     # read rnadisease.csv and make a dataframe
-    df = pd.read_csv("./src/rnadisease/rnadisease.csv")
+    df = pd.read_csv("./results/rnadisease/rnadisease.csv")
     # extract the rows that have DOID
     df2 = df[df["DO ID"] == f"DOID:{DOID}"]
     df3 = df2[df2["specise"] == "Homo sapiens"]
@@ -55,7 +55,7 @@ def rnadisease2genes(DOID, score):
     new_df["PMID"] = new_df["PMID"].astype(str)
     result = new_df.groupby('RNA Symbol')['PMID'].agg(','.join).reset_index()
     result = result.reset_index().rename(columns={"RNA Symbol":"RNA Symbol","PMID":"PMID"})
-    result.to_csv("./src/rnadisease/pre_rnadisease.tsv", sep='\t',index=False, header=False)
+    result.to_csv("./results/rnadisease/pre_rnadisease.tsv", sep='\t',index=False, header=False)
     return print("pre file is done. Move to the next step")
 
 
@@ -63,7 +63,7 @@ def rna2ensg():
     """
     """
     ensg_list = []
-    with open('./src/rnadisease/pre_rnadisease.tsv') as f:
+    with open('./results/rnadisease/pre_rnadisease.tsv') as f:
         for line in f:
             gene = line.split("\t")[1]
             pmid = line.split("\t")[2]

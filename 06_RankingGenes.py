@@ -18,10 +18,11 @@ parser.add_argument("output", help="Add this to the output file name")
 args = parser.parse_args()
 
 def main():
+    gene2pubmed.download_file()
     pfocr_df = pd.read_csv("./results/pfocr_genes.tsv",sep="\t")
     mirtex_df = pd.read_csv("./results/mirtex_genes.tsv",sep="\t")
     rnadisease_df = pd.read_csv("./results/rnadisease_genes.tsv", sep="\t")
-    disgenet_df = pd.read_csv("./results/disgenet_genes_01.tsv", sep="\t")
+    disgenet_df = pd.read_csv("./results/disgenet_genes.tsv", sep="\t")
     pubchem_df = pd.read_csv("./results/pubchem_genes.tsv", sep="\t")
 
     bib_df = pd.concat([pfocr_df,mirtex_df,rnadisease_df,disgenet_df,pubchem_df],ignore_index=True)

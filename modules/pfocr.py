@@ -85,7 +85,7 @@ def pfocr2genes(column,keyword):
                             # make a new column named "PMCID" and add the pmcid to the column
                             df["PMCID"] = pmcid
                             # save the dataframe to a file
-                            df.to_csv("pfocr_genes.tsv", mode='a', header=False, sep="\t")
+                            df.to_csv("./results/pre_pfocr_genes.tsv", mode='a', header=False, sep="\t")
     return print("PFOCR gene extraction is done. Move to the next step")
                         # # save the content to a file
                         # with open(f"test.txt", "a") as f:

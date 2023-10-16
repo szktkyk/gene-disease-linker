@@ -207,7 +207,7 @@ def mirtexlist2ensg(mirna_list,gene_list,output_filepath):
                     print("No results. next loop")
                     continue
 
-    df = pd.Dataframe(ensg_list)
+    df = pd.DataFrame(ensg_list)
     # Delete duplicate
     df["PMID_PMCID"] = df["PMID_PMCID"].astype(str)
     result = df.groupby('gene')['PMID_PMCID'].agg(','.join).reset_index()

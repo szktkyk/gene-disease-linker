@@ -17,7 +17,7 @@ def main():
         os.mkdir(f"./results")
     mirna_list,gene_list = mirtex.mirtex2list(args.keyword)
     mirtex.mirtexlist2ensg(mirna_list,gene_list,f"./results/mirtex_genes.tsv")
-    mirtex.deleteduplicate()
+    # mirtex.deleteduplicate()
 
 if __name__ == "__main__":
     main()
