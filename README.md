@@ -27,10 +27,12 @@ Prioritize candidate genes by bibliome analysis
 ## How to use
 1. python 01_pfocr2ensg.py *the disease keyword* 
 2. python 02_rnadisease2ensg.py *DOID* *(int) score (Annotation score between 0 and 1.)*
+    - Look for the DOID (Disease Ontology ID) from this website (https://disease-ontology.org/)
 3. python 03_mirtex2ensg.py *the disease keyword*
 4. python 04_disgenet2ensg.py *ncit disease ID* *score (to filter genes)*
+    - Look for ncit disease ID from this website (http://linkedlifedata.com/)
 5. python 05_pubchem2ensg.py *pubchem disease ID*
-    - Download pc_disease.ttl.gz from this URL (https://pubchem.ncbi.nlm.nih.gov/docs/rdf-disease) and look for the disease ID
+    - Download pc_disease.ttl.gz from this website (https://pubchem.ncbi.nlm.nih.gov/docs/rdf-disease) and look for the disease ID
 6. python 06_RankingGenes.py *path to your text file including a list of genes* *output_filename*
 
 
@@ -42,5 +44,5 @@ python -u 02_rnadisease2ensg.py "14330" 0.65 2>&1 | tee ./log/rnadisease_log.txt
 python -u 03_mirtex2ensg.py "parkinson" 2>&1 | tee ./log/mirtex_log.txt`
 python -u 04_disgenet2ensg.py "C0030567" 0.6 2>&1 | tee ./log/disgenet_log.txt`
 python -u 05_pubchem2ensg.py "DZID8805" 2>&1 | tee ./log/pubchem_log.txt`
-python -u 06_RankingGenes.py "./" "parkinson_bibliome" 2>&1 | tee ./log/rankgenes_log.txt`
+python -u 06_RankingGenes.py "test_50_genes.txt" "parkinson_bibliome" 2>&1 | tee ./log/rankgenes_log.txt`
 ```
