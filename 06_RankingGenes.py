@@ -31,6 +31,7 @@ def main():
     bib_df = bib_df.groupby('gene').agg({'PMID_PMCID':','.join,'evidence':','.join}).reset_index()
     bib_df = bib_df.reset_index().rename(columns={"gene":"gene","PMID_PMCID":"PMID_PMCID","evidence":"evidence"})
     bib_df = bib_df.drop("index",axis=1)
+    bib_df["PMID_PMCID"] = bib_df["PMID_PMCID"].apply(lambda x: ",".join(pd.unique(str(x).split(","))) if pd.notna(x) else x)
     # print(len(bib_df))
     bib_df.to_csv(f"./results/{args.output}_bib_genes.tsv", sep='\t',index=False)
     # bib_df = bib_df.drop_duplicates(subset=["gene","PMID_PMCID","evidence"])
