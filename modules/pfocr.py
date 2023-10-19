@@ -123,7 +123,11 @@ def genes2ensg(filepath,taxonomy):
         for i in gdata_result:
             geneid = i["geneid"]
             pmcid = i["pmcid"]
-            print(f"\ngeneid:{geneid},pmcid:{pmcid}")
+            pmc_convert_api_url = f"https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?tool=my_tool&email=my_email@example.com&ids={pmcid}&format=json"
+            r = requests.get(pmc_convert_api_url)
+            data = r.json()
+            pmid = data["records"][0]["pmid"]
+            print(f"\ngeneid:{geneid},pmid:{pmid}")
             if geneid == "":
                 continue
             else:  
@@ -138,8 +142,8 @@ def genes2ensg(filepath,taxonomy):
                 resultlist = r.json()['result']
                 for result in resultlist:
                     if result['converted'].startswith('ENSG'):
-                        ensg_list.append({"gene":result['converted'],"PMID_PMCID":pmcid,"evidence":"PFOCR"})
-                        print({"gene":result['converted'],"PMID_PMCID":pmcid,"evidence":"PFOCR"})
+                        ensg_list.append({"gene":result['converted'],"PMID_PMCID":pmid,"evidence":"PFOCR"})
+                        print({"gene":result['converted'],"PMID_PMCID":pmid,"evidence":"PFOCR"})
                     else:
                         continue
     return ensg_list    
