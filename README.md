@@ -42,7 +42,7 @@ Prioritize candidate genes by bibliome analysis
 python -u 01_pfocr2ensg.py "parkinson" 2>&1 | tee ./log/pfocr_log.txt
 python -u 02_rnadisease2ensg.py "14330" 0.65 2>&1 | tee ./log/rnadisease_log.txt` 
 python -u 03_mirtex2ensg.py "parkinson" 2>&1 | tee ./log/mirtex_log.txt`
-python -u 04_disgenet2ensg.py "C0030567" 0.35 2>&1 | tee ./log/disgenet_log.txt`
+python -u 04_disgenet2ensg.py "C0030567" 0.3 2>&1 | tee ./log/disgenet_log.txt`
 python -u 05_pubchem2ensg.py "DZID8805" 2>&1 | tee ./log/pubchem_log.txt`
 python -u 06_RankingGenes.py "test_50_genes.txt" "parkinson_bibliome" 2>&1 | tee ./log/rankgenes_log.txt`
 ```
