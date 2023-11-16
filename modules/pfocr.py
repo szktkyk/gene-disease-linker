@@ -126,7 +126,11 @@ def genes2ensg(filepath,taxonomy):
             pmc_convert_api_url = f"https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?tool=my_tool&email=my_email@example.com&ids={pmcid}&format=json"
             r = requests.get(pmc_convert_api_url)
             data = r.json()
-            pmid = data["records"][0]["pmid"]
+            pmids = []
+            for a in data["records"]:
+                pmids.append(a["pmid"])
+            # pmid = data["records"][0]["pmid"]
+            pmid = ','.join(pmids)
             print(f"\ngeneid:{geneid},pmid:{pmid}")
             if geneid == "":
                 continue

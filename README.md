@@ -30,7 +30,7 @@ Prioritize candidate genes by bibliome analysis
     - Look for the DOID (Disease Ontology ID) from this website (https://disease-ontology.org/)
 3. python 03_mirtex2ensg.py *the disease keyword*
 4. python 04_disgenet2ensg.py *ncit disease ID* *score (to filter genes)*
-    - Look for ncit disease ID from this website (http://linkedlifedata.com/)
+    - Look for ncit disease ID from this website (https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies)
 5. python 05_pubchem2ensg.py *pubchem disease ID*
     - Download pc_disease.ttl.gz from this website (https://pubchem.ncbi.nlm.nih.gov/docs/rdf-disease) and look for the disease ID
 6. python 06_RankingGenes.py *path to your text file including a list of genes* *output_filename*
