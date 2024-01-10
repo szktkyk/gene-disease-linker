@@ -1,16 +1,16 @@
-# GeneRankerBibliome
+# gene-ranker-bibliome
 Prioritize candidate genes by bibliome analysis
 - This is a tool to categorize genes (including non-coding genes) into two types `reported in literature before` or `unreported` for a specific disease. 
-    - if reported, evidence literature IDs will be shown. 
+    - if reported, evidence literature IDs will be provided. 
 - This tool also ranks the genes based on the number of PubMed articles annotated to each gene in gene2pubmed.
 - Input
-    - A list of your interested genes in a text file (Ensembl gene ID). I have prepared the gene ID converter (00_geneconverter.py) if you have a list of gene names.
+    - A list of your interested genes in a text file (Ensembl gene ID). I have prepared the gene ID converter (00_geneconverter.py) if you have a list of gene symbols.
     - A keyword of disease name for 01_pfocr2ensg.py and 03_mirtex2ensg.py
     - A DOID (Disease Ontology ID) for 02_rnadisease2ensg.py
     - A NCIT disease term for 04_disgenet2ensg.py
     - A pubchem disease ID for 05_pubchem2ensg.py
 - Output
-    - A tsv file of showing all the genes that have been studied for the specific disease (including the evidence literature IDs) based on 5 bibliome databases.
+    - A tsv file of showing all the genes with reported publications for the specific disease (including the evidence literature IDs) based on 5 bibliome databases.
     - A tsv file of categorized and ranked genes of your interest.
 
 ## Requirements
