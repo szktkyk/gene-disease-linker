@@ -4,8 +4,7 @@ import csv
 from modules import disgenet
 import pandas as pd
 
-parser = argparse.ArgumentParser(description="This script extracts genes associated with disease from DisGeNET based on a ncit disease term, and writes it to a tsv file (./results).")
-
+parser = argparse.ArgumentParser(description="This script collects genes associated with disease from DisGeNET based on a ncit disease term, and writes it to a tsv file (./results).")
 parser.add_argument("linked_data_Disease_ID", help="linked life data disease ID to search for")
 parser.add_argument("score", type=float,help="minimum score between 0 and 1 to filter the genes")
 parser.add_argument("--limit", help="limit of the number of evidence pmids for each gene", default="15")

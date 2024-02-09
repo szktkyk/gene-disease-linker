@@ -12,7 +12,6 @@ t_delta = datetime.timedelta(hours=9)
 JST = datetime.timezone(t_delta, "JST")
 now = datetime.datetime.now(JST)
 date = now.strftime("%Y%m%d")
-# date = "20230920"
 
 def download_file():
     if not os.path.exists(f"./results/gene2pubmed_{date}"):
@@ -43,9 +42,6 @@ def search_pmids(genes_ensgs):
     """
     # read the file and make a dataframe with the data type of string
     df_gene2pubmed = pd.read_csv(f"./results/gene2pubmed_{date}", sep="\t", dtype=str)
-    # df_gene2pubmed.columns = ["tax_id","GeneID","PubMed_ID"]
-    # print the type of "GeneID" column
-    # print(df_gene2pubmed["GeneID"].dtypes)
     # convert ensgs to ncbi geneids
     new_list = []
     for ensg in genes_ensgs:
@@ -57,20 +53,16 @@ def search_pmids(genes_ensgs):
             'query':ensg,
         }
         )
-        # print(r.json()['result'][0])
         ncbi_geneid = r.json()['result'][0]['converted']
         gene_name = r.json()['result'][0]['name']
-        # print(ncbi_geneid)
         # search the ncbi_geneid in the column "GeneID"
-
         df_searched = df_gene2pubmed[df_gene2pubmed["GeneID"] == str(ncbi_geneid)]
-        # print(df_searched)
         count = len(df_searched)
         # make a list of the column "PubMed_ID"
         pmids = df_searched["PubMed_ID"].tolist()
         pmids_str = ",".join(pmids)
-        new_list.append({"ensg":ensg,"gene_name":gene_name,"count":count,"pmids":pmids_str})
-        print({"ensg":ensg,"gene_name":gene_name,"count":count,"pmids":pmids_str})
+        new_list.append({"ensg":ensg,"ncbi_geneid":ncbi_geneid, "gene_name":gene_name,"count":count,"pmids":pmids_str})
+        print({"ensg":ensg,"ncbi_geneid":ncbi_geneid, "gene_name":gene_name,"count":count,"pmids":pmids_str})
     return new_list
 
 

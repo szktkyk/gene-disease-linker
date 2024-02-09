@@ -4,9 +4,8 @@ from modules import rnadisease
 import pandas as pd
 import os
 
-parser = argparse.ArgumentParser(description="This script extracts genes from RNAdisease based on a DOID (Disease Ontology ID) and annotation score, and writes it to a tsv file (./results).")
-
-parser.add_argument("DOID", type=str,help="DOID to search for")
+parser = argparse.ArgumentParser(description="This script collects genes from RNAdisease based on a DOID (Disease Ontology ID) and annotation score, and writes it to a tsv file (./results).")
+parser.add_argument("DOID", type=str, help="DOID to search for")
 parser.add_argument("score",type=float, help="Annotation score to filter the search hits")
 
 args = parser.parse_args()
