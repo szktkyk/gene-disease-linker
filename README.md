@@ -34,16 +34,16 @@
 
 
 ## How to use
-1. python 01_rnadisease2ensg.py *DOID* *score(Int, Annotation score between 0 and 1.)*
+1. `python 01_rnadisease2ensg.py *DOID* *score(Int, Annotation score between 0 and 1.)*`
     - Look for the DOID (Disease Ontology ID) from this website (https://disease-ontology.org/)
-2. python 02_mirtex2ensg.py *the disease keyword*
-3. python 03_disgenet2ensg.py *ncit disease ID* *score(to filter genes)*
+2. `python 02_mirtex2ensg.py *the disease keyword*`
+3. `python 03_disgenet2ensg.py *ncit disease ID* *score(to filter genes)*`
     - Look for ncit disease ID from this website (https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies)
-4. python 04_pubchem2ensg.py *pubchem disease ID*
+4. `python 04_pubchem2ensg.py *pubchem disease ID*`
     - Download pc_disease.ttl.gz from this website (https://pubchem.ncbi.nlm.nih.gov/docs/rdf-disease) and look for the disease ID
-5. python 05_opentargets2ensg.py *efoID* *size(to filter the number of literatures)*
+5. `python 05_opentargets2ensg.py *efoID* *size(to filter the number of literatures)*`
     - Look for efoID from this website (https://platform.opentargets.org/)
-6. python 06_LinkGenesDisease.py *path to your text file including a list of genes* *efoID* *output_filename*
+6. `python 06_LinkGenesDisease.py *path to your text file including a list of genes* *efoID* *output_filename*`
 
 
 ## Example 
