@@ -4,10 +4,10 @@
     - The following 6 databases are referred to collect gene-disease associations.
         - Open Targets Platform: [Ref](https://doi.org/10.1093/nar/gkac1046)
         - RNADisease: [Ref](https://doi.org/10.1093/nar/gkac814)
-        - miRTex: [Ref](10.1371/journal.pcbi.1004391)
+        - miRTex: [Ref](https://doi.org/10.1371/journal.pcbi.1004391)
         - DisGeNET: [Ref](https://doi.org/10.1093/nar/gkw943)
         - PubChem: [Ref](https://ceur-ws.org/Vol-3415/paper-4.pdf)
-        - gene2pubmed
+        - gene2pubmed [Ref](https://ftp.ncbi.nlm.nih.gov/gene/DATA/)
 
 - Also, this tool links your gene set with the collected information (gene-disease associations and evidences).
     - It would indicate how well your gene is studied for a given disease by checking the number of evidence papers annotated.

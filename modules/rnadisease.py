@@ -70,7 +70,7 @@ def rna2ensg():
             pmid = pmid.replace("\n","")
             print(f"\nrna:{gene}")
             # check if the end of the gene name is 5 digits
-            if re.search(r'\d{5}$', gene):
+            if re.search(r'\d{6}$', gene):
                 url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term={gene}"
                 try:
                     tree = use_eutils(url)
