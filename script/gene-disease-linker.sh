@@ -9,8 +9,8 @@ CHECK_FILE_PATHS=(
 )
 
 download_needed=false
-DATASETS="datasets"
-DATAFORMAT="dataformat"
+DATASETS="./datasets"
+DATAFORMAT="./dataformat"
 
 for CHECK_FILE_PATH in "${CHECK_FILE_PATHS[@]}"; do
     if [ ! -f "$CHECK_FILE_PATH" ]; then
@@ -36,7 +36,15 @@ fi
 
 
 # list of scripts to run
-scripts=("01_rnadisease2ensg.py")
+scripts=(
+    "src/01_rnadisease2ensg.py"
+    "src/02_mirtex2ensg.py"
+    "src/03_disgenet2ensg.py"
+    "src/04_pubchem2ensg.py"
+    "src/05_opentargets2ensg.py"
+    "src/06_LinkGenesDisease.py" 
+    )
+logname=${script#src/}
 
 # log directory
 log_dir="logs"
@@ -44,7 +52,7 @@ mkdir -p "$log_dir"
 
 # run each script and log output
 for script in "${scripts[@]}"; do
-    log_file="$log_dir/${script%.py}.log"
+    log_file="$log_dir/${logname%.py}.log"
     echo "Running $script and logging to $log_file"
     python -u "$script" 2>&1 | tee "$log_file"
     if [ $? -eq 0 ]; then
@@ -67,10 +75,26 @@ done
 
 if $delete_files; then
     echo "All files exist. Deleting downloaded file."
-    rm -f "datasets"
-    rm -f "dataformat"
+    rm -f "$DATASETS"
+    rm -f "$DATAFORMAT"
 else
     echo "Some files do not exist. No files deleted."
 fi
 
-echo "Script completed."
+date=$(date +%Y%m%d)
+
+RESULTS_DIR="./results/$date"
+
+FILE_PATTERN="*_output.tsv"
+
+FILES_FOUND=$(find "$RESULTS_DIR" -name "$FILE_PATTERN")
+
+if [ -n "$FILES_FOUND" ]; then
+    echo "Files found:"
+    echo "$FILES_FOUND"
+    echo "Script completed successfully."
+    exit 0
+else
+    echo "Warning: No files matching the pattern '$RESULTS_DIR/$FILE_PATTERN' were found."
+    exit 1
+fi

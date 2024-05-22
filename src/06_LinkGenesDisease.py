@@ -15,10 +15,11 @@ date = now.strftime("%Y%m%d")
 def main(config):
     with open(f'./{config}','r') as yml:
         config = yaml.safe_load(yml)
-    
     mygenes = config["TEXT_FILE_WITH_ENSEMBL_GENE_IDs"] 
     efoid = config["EXPERIMENTAL_FACTOR_ONTOLOGY_ID"]
     output_prefix = config["OUTPUT_PREFIX"]
+    if os.path.exists(f"./results/{date}/{output_prefix}_output.tsv"):
+        return print("The output file already exist.")
     gene2pubmed.download_file()
     # read a txt file and make a list
     with open(mygenes) as f:
