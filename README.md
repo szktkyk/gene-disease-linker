@@ -25,23 +25,24 @@
         - Download pc_disease.ttl.gz from this website (https://pubchem.ncbi.nlm.nih.gov/docs/rdf-disease) and look for the disease ID
     - `EXPERIMENTAL_FACTOR_ONTOLOGY_ID` (ex: "MONDO_0021095") for Open Targets Platform
         - Look for efoID from this website (https://platform.opentargets.org/)
-    - `TEXT_FILE_WITH_ENSEMBL_GENE_IDs` (ex: "gene_set.txt")
-    - `OUTPUT_FILE_PATH` (ex: "test_output.csv")
+    - `TEXT_FILE_WITH_ENSEMBL_GENE_IDs` (ex: "168genes.txt")
+    - `OUTPUT_PREFIX` (ex: "20240214")
 
 - OUTPUT
-    - Genes associated with a given disease (ex: "test_bib_genes.tsv")
-    - Your gene set annotated with evidence sources and papers (ex: "test_output.tsv")
+    - Genes associated with a given disease (ex: "20240214_bib_genes.tsv")
+    - Your gene set annotated with evidence sources and papers (ex: "20240214_output.tsv")
+        - See `Result Example` below.
 
 
 ## Environment Setup
 1. Prepare your txt file with ensembl gene IDs separated by line.
 2. Fill in `config.yml`. Please refer to my config.yml in this GitHub repository.
-3.  `docker build gene-disease-linker .`
+3.  `docker build -t gene-disease-linker .`
 
 
 
 ## How to run
-1. `docker run --rm -it -v $(pwd):/app gene-disease-linker ./gene-disease-linker.sh`
+1. `docker run --rm -it -v $(pwd):/app gene-disease-linker ./script/gene-disease-linker.sh`
 2. output_files will be located in results directory.
 
 
