@@ -13,12 +13,20 @@
     - It would indicate how well your gene is studied for a given disease by checking the number of evidence papers annotated.
 
 - INPUT
-    - DISEASE KEYWORD (ex: "parkinson")
-    - DISEASE ONTOLOGY ID (ex: "14330")
-    - NCIT DISEASE TERM (ex: "C0030567")
-    - PUBCHEM DISEASE ID (ex: "DZID8805")
-    - EXPERIMENTAL FACTOR ONTOLOGY ID (ex: "MONDO_0021095")
-    - TEXT FILE WITH ENSEMBL GENE IDs (ex: "gene_set.txt")
+    - `DISEASE_ONTOLOGY_ID` (ex: "14330") for RNAdisease
+        - Look for the DOID (Disease Ontology ID) from this website (https://disease-ontology.org/)
+    - `RNA_DISEASE_SCORE` (ex: "0.65") for RNAdisease
+    - `DISEASE_KEYWORD` (ex: "parkinson") for miRTex
+    - `NCIT_DISEASE_TERM` (ex: "C0030567") for DisGeNET
+        - Look for ncit disease ID from this website (https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies)
+    - `DISGENET_SCORE` (ex: "0.3") for DisGeNET
+    - `DISGENET_PUBLICATION_LIMIT` (ex: "15") for DisGeNET
+    - `PUBCHEM_DISEASE_ID` (ex: "DZID8805") for PubChem
+        - Download pc_disease.ttl.gz from this website (https://pubchem.ncbi.nlm.nih.gov/docs/rdf-disease) and look for the disease ID
+    - `EXPERIMENTAL_FACTOR_ONTOLOGY_ID` (ex: "MONDO_0021095") for Open Targets Platform
+        - Look for efoID from this website (https://platform.opentargets.org/)
+    - `TEXT_FILE_WITH_ENSEMBL_GENE_IDs` (ex: "gene_set.txt")
+    - `OUTPUT_FILE_PATH` (ex: "test_output.csv")
 
 - OUTPUT
     - Genes associated with a given disease (ex: "test_bib_genes.tsv")
@@ -26,32 +34,22 @@
 
 
 ## Environment Setup
-1. `conda create -n generb python=3.11`
-2. `conda activate gdl`
-3. `conda install -c conda-forge ncbi-datasets-cli`
-3. `cd gene-disease-bibliome`
-4. `pip install -r requirements.txt`
+1. Prepare your txt file with ensembl gene IDs separated by line.
+2. Fill in `config.yml`. Please refer to my config.yml in this GitHub repository.
+3.  `docker build gene-disease-linker .`
 
 
-## How to use
-1. `python 01_rnadisease2ensg.py *DOID* *score(Int, Annotation score between 0 and 1.)*`
-    - Look for the DOID (Disease Ontology ID) from this website (https://disease-ontology.org/)
-2. `python 02_mirtex2ensg.py *the disease keyword*`
-3. `python 03_disgenet2ensg.py *ncit disease ID* *score(to filter genes)*`
-    - Look for ncit disease ID from this website (https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies)
-4. `python 04_pubchem2ensg.py *pubchem disease ID*`
-    - Download pc_disease.ttl.gz from this website (https://pubchem.ncbi.nlm.nih.gov/docs/rdf-disease) and look for the disease ID
-5. `python 05_opentargets2ensg.py *efoID* *size(to filter the number of literatures)*`
-    - Look for efoID from this website (https://platform.opentargets.org/)
-6. `python 06_LinkGenesDisease.py *path to your text file including a list of genes* *efoID* *output_filename*`
+
+## How to run
+1. `docker run --rm -it -v $(pwd):/app gene-disease-linker ./gene-disease-linker.sh`
+2. output_files will be located in results directory.
 
 
-## Example 
-```
-python -u 01_rnadisease2ensg.py "14330" 0.65 2>&1 | tee ./log/rnadisease_log.txt 
-python -u 02_mirtex2ensg.py "parkinson" 2>&1 | tee ./log/mirtex_log.txt
-python -u 03_disgenet2ensg.py "C0030567" 0.3 2>&1 | tee ./log/disgenet_log.txt
-python -u 04_pubchem2ensg.py "DZID8805" 2>&1 | tee ./log/pubchem_log.txt
-python -u 05_opentargets2ensg.py "MONDO_0021095" 5000 2>&1 | tee ./log/otp_log.txt
-python -u 06_LinkGenesDisease.py "168genes.txt" "MONDO_0021095" "test" 2>&1 | tee ./log/linkgenesdisease_log.txt
-```
+## Result Example
+| ensembl_ID       | ncbi_geneid | gene_name | availability_association | evidence    | count_of_PMIDs_from_evidence | count_of_PMIDs_from_gene2pubmed | PMIDs_from_evidence                           | PMIDs_from_gene2pubmed                                                                                     |
+|------------------|-------------|-----------|--------------------------|-------------|-----------------------------|---------------------------------|----------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| ENSG00000273015  | None        | None      | yes                      | RNAdisease  | 1                           | 0                               | 35173238                                     | -                                                                                                           |
+| ENSG00000205837  | 400941      | LINC00487 | no                       | -           | 0                           | 0                               | -                                            | -                                                                                                           |
+| ENSG00000176681  | 9884        | LRRC37A   | yes                      | OpenTargets | 4                           | 11                              | 19915575, 22451204, 31701892, 34064523       | 9628581, 12477932, 14702039, 15489334, 15533724, 16344560, 22419166, 22952603, 23064749, 29507755, 34373451 |
+| ENSG00000136059  | 50853       | VILL      | no                       | -           | 0                           | 12                              | -                                            | 9179494, 12477932, 15489334, 16921170, 18006815, 18022635, 21873635, 26871637, 28514442, 30021884, 33961781, 36543142 |
+| ENSG00000276168  | 6029        | RN7SL1    | yes                      | RNAdisease  | 1                           | 12                              | 27021022                                     | 6084597, 12086622, 12244299, 15667936, 17881443, 18067920, 23221635, 26718402, 28709002, 30165668, 33080218, 35143945 |

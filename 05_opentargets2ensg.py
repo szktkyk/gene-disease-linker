@@ -5,63 +5,66 @@ import pandas as pd
 import argparse
 import json
 import requests
+import yaml
 
 
-parser = argparse.ArgumentParser(description="This script collects genes associated with a given disease from Open Targets Platform based on the ID, and writes it to a tsv file (./results).")
-parser.add_argument("efoID",type=str, help="efo ontology ID")
-parser.add_argument("size", type=int, help="the number of genes to collect")
-args = parser.parse_args()
 
-def main():
+def main(config):
     """
     
     """
+    with open(f'./{config}','r') as yml:
+        config = yaml.safe_load(yml)
+    
+    if not os.path.exists(f"./results/otp_genes.txt"): 
+        disease_genes = []
+        efoid = config["EXPERIMENTAL_FACTOR_ONTOLOGY_ID"]
+        variables = {
+        "efoId": efoid,
+        "size": 9999
+        }
 
-    disease_genes = []
-
-    variables = {
-    "efoId": args.efoID,
-    "size": args.size
-    }
-
-    # Define your GraphQL query
-    query_string = """
-    query associatedTargets (
-        $efoId: String!
-        $size: Int!
-        ) {
-        disease(efoId: $efoId){
-            id
-            name
-            associatedTargets (page:{size:$size, index:0}) {
-                count
-                rows {
-                    target {
-                    id
-                    approvedSymbol
+        # Define your GraphQL query
+        query_string = """
+        query associatedTargets (
+            $efoId: String!
+            $size: Int!
+            ) {
+            disease(efoId: $efoId){
+                id
+                name
+                associatedTargets (page:{size:$size, index:0}) {
+                    count
+                    rows {
+                        target {
+                        id
+                        approvedSymbol
+                }
+            }
             }
         }
         }
-    }
-    }
 
-    """
+        """
 
-    base_url = "https://api.platform.opentargets.org/api/v4/graphql"
-    r = requests.post(base_url, json={"query": query_string, "variables": variables})
-    api_response = json.loads(r.text)
-    genes = api_response["data"]["disease"]["associatedTargets"]["rows"]
-    for i in genes:
-        if i["target"]["id"] != None:
-            ensg = i["target"]["id"]
-            disease_genes.append(ensg)
-        else:
-            pass
+        base_url = "https://api.platform.opentargets.org/api/v4/graphql"
+        r = requests.post(base_url, json={"query": query_string, "variables": variables})
+        api_response = json.loads(r.text)
+        genes = api_response["data"]["disease"]["associatedTargets"]["rows"]
+        for i in genes:
+            if i["target"]["id"] != None:
+                ensg = i["target"]["id"]
+                disease_genes.append(ensg)
+            else:
+                pass
 
-    with open("./results/otp_genes.txt", "w") as output:
-        for row in disease_genes:
-            output.write(str(row) + '\n')
+        with open("./results/otp_genes.txt", "w") as output:
+            for row in disease_genes:
+                output.write(str(row) + '\n')
+        return print("05_opentargets2ensg has been completed")
+    else:
+        return print("The file already exists.")
 
 
 if __name__ == "__main__":
-    main()
+    main("config.yml")

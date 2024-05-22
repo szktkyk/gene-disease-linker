@@ -3,31 +3,32 @@ import argparse
 import os
 import datetime
 from modules import gene2pubmed, get_evidence_otp
+import yaml
 
 t_delta = datetime.timedelta(hours=9)
 JST = datetime.timezone(t_delta, "JST")
 now = datetime.datetime.now(JST)
 date = now.strftime("%Y%m%d")
 
-parser = argparse.ArgumentParser(description="This script takes a list of ensembl genes in a text file, and links your gene set with the collected information (gene-disease associations and evidences)")
-parser.add_argument("path_to_your_genes", help="path to your genes in a text file")
-parser.add_argument("efoID",type=str, help="efo ontology ID")
-parser.add_argument("output", help="Add this to the output file name")
 
 
-args = parser.parse_args()
-
-def main():
+def main(config):
+    with open(f'./{config}','r') as yml:
+        config = yaml.safe_load(yml)
+    
+    mygenes = config["TEXT_FILE_WITH_ENSEMBL_GENE_IDs"] 
+    efoid = config["EXPERIMENTAL_FACTOR_ONTOLOGY_ID"]
+    output_prefix = config["OUTPUT_PREFIX"]
     gene2pubmed.download_file()
     # read a txt file and make a list
-    with open(args.path_to_your_genes) as f:
+    with open(mygenes) as f:
         gene_list = f.read().splitlines()
     with open("./results/otp_genes.txt") as f:
         otp_list = f.read().splitlines()
     common_genes = list(set(gene_list) & set(otp_list))
         
     # Get the evidence from OpenTargets
-    otp_df = get_evidence_otp.get_evidence_otp(common_genes,args.efoID,2000)
+    otp_df = get_evidence_otp.get_evidence_otp(common_genes,efoid,2000)
     otp_df.to_csv(f"./results/otp_genes.tsv", sep='\t',index=False)
     # otp_df = pd.read_csv("./results/otp_genes.tsv",sep="\t")
     mirtex_df = pd.read_csv("./results/mirtex_genes.tsv",sep="\t")
@@ -35,18 +36,22 @@ def main():
     disgenet_df = pd.read_csv("./results/disgenet_genes.tsv", sep="\t")
     pubchem_df = pd.read_csv("./results/pubchem_genes.tsv", sep="\t")
 
+    if not os.path.exists(f"./results/{output_prefix}_bib_genes.tsv"):
+        bib_df = pd.concat([otp_df,mirtex_df,rnadisease_df,disgenet_df,pubchem_df],ignore_index=True)
+        bib_df["PMID_PMCID"] = bib_df["PMID_PMCID"].astype(str)
+        bib_df = bib_df.groupby('gene').agg({'PMID_PMCID':','.join,'evidence':','.join}).reset_index()
+        bib_df = bib_df.reset_index().rename(columns={"gene":"gene","PMID_PMCID":"PMID_PMCID","evidence":"evidence"})
+        bib_df = bib_df.drop("index",axis=1)
+        # delete the duplicated PMIDs
+        bib_df["PMID_PMCID"] = bib_df["PMID_PMCID"].apply(lambda x: ",".join(pd.unique(str(x).split(","))) if pd.notna(x) else x)
+        # print(len(bib_df))
+        bib_df.to_csv(f"./results/{output_prefix}_bib_genes.tsv", sep='\t',index=False)
+        print("bib_genes.tsv has been created.")
 
-    bib_df = pd.concat([otp_df,mirtex_df,rnadisease_df,disgenet_df,pubchem_df],ignore_index=True)
-    bib_df["PMID_PMCID"] = bib_df["PMID_PMCID"].astype(str)
-    bib_df = bib_df.groupby('gene').agg({'PMID_PMCID':','.join,'evidence':','.join}).reset_index()
-    bib_df = bib_df.reset_index().rename(columns={"gene":"gene","PMID_PMCID":"PMID_PMCID","evidence":"evidence"})
-    bib_df = bib_df.drop("index",axis=1)
-    # delete the duplicated PMIDs
-    bib_df["PMID_PMCID"] = bib_df["PMID_PMCID"].apply(lambda x: ",".join(pd.unique(str(x).split(","))) if pd.notna(x) else x)
-    # print(len(bib_df))
-    bib_df.to_csv(f"./results/{args.output}_bib_genes.tsv", sep='\t',index=False)
-
-
+    else:
+        bib_df = pd.read_csv(f"./results/{output_prefix}_bib_genes.tsv",sep="\t")
+        print("bib_genes.tsv already exists. the tsv file has been loaded")
+        
     # make a empty dataframe
     new_df = pd.DataFrame(columns=["ensembl_ID","ncbi_geneid","gene_name","availability_association","evidence","count_of_PMIDs_from_evidence","count_of_PMIDs_from_gene2pubmed","PMIDs_from_evidence","PMIDs_from_gene2pubmed"])
 
@@ -107,8 +112,8 @@ def main():
         os.mkdir(f"./results/{date}")
 
     new_df = new_df.sort_values("count_of_PMIDs_from_gene2pubmed",ascending=True)
-    new_df.to_csv(f"./results/{date}/{args.output}_output.tsv",sep="\t",index=False)
+    new_df.to_csv(f"./results/{date}/{output_prefix}_output.tsv",sep="\t",index=False)
     
 
 if __name__ == "__main__":
-    main()
+    main("config.yml")

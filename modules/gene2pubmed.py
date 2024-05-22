@@ -19,16 +19,18 @@ def download_file():
         outputpath = f"./results/gene2pubmed_{date}.gz"
         url = "https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz"
         try:
-            response = requests.get(url)
+            response = requests.get(url, stream=True)
             if response.status_code == 200:
                 with open(outputpath, 'wb') as file:
-                    file.write(response.content)           
-                with gzip.open(f"./results/gene2pubmed_{date}.gz", mode="rb") as gzip_file:
-                    with open(f"./results/gene2pubmed_{date}", mode="wb") as decompressed_file:
-                        shutil.copyfileobj(gzip_file, decompressed_file)
-                    # delete the zip file  
-                    os.remove(f"./results/gene2pubmed_{date}.gz")
-                    print(f"Downloaded {url} to {outputpath}")
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:
+                            file.write(chunk)     
+                    with gzip.open(f"./results/gene2pubmed_{date}.gz", mode="rb") as gzip_file:
+                        with open(f"./results/gene2pubmed_{date}", mode="wb") as decompressed_file:
+                            shutil.copyfileobj(gzip_file, decompressed_file)
+                        # delete the zip file  
+                        os.remove(f"./results/gene2pubmed_{date}.gz")
+                        print(f"Downloaded {url} to {outputpath}")
             else:
                 print(f"Failed to download. Status code: {response.status_code}")
         except Exception as e:
