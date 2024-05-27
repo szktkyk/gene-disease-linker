@@ -26,7 +26,7 @@
     - `EXPERIMENTAL_FACTOR_ONTOLOGY_ID` (ex: "MONDO_0021095") for Open Targets Platform
         - Look for efoID from this website (https://platform.opentargets.org/)
     - `TEXT_FILE_WITH_ENSEMBL_GENE_IDs` (ex: "168genes.txt")
-    - `OUTPUT_PREFIX` (ex: "20240214")
+    - `OUTPUT_PREFIX` (ex: "20240208")
 
 - OUTPUT
     - Genes associated with a given disease (ex: "20240214_bib_genes.tsv")
