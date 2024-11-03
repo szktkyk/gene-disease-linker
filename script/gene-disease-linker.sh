@@ -12,26 +12,22 @@ download_needed=false
 DATASETS="./datasets"
 DATAFORMAT="./dataformat"
 
-for CHECK_FILE_PATH in "${CHECK_FILE_PATHS[@]}"; do
-    if [ ! -f "$CHECK_FILE_PATH" ]; then
-        echo "File $CHECK_FILE_PATH not found. Downloading NCBI datasets cli"
-        download_needed=true
-        break
-    fi
-done
 
-if $download_needed; then
+if [ ! -f "$DATASETS" ]; then
     dataset_URL='https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/datasets'
     echo "Downloading file from $dataset_URL..."
     curl -o "$DATASETS" "$dataset_URL"
+else
+    echo "File $DATASETS found. No need to download."
+fi
 
+if [ ! -f "$DATAFORMAT" ]; then
     dataformat_URL='https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/dataformat'
     echo "Downloading file from $dataformat_URL..."
     curl -o "$DATAFORMAT" "$dataformat_URL"
     chmod +x datasets dataformat
-
 else
-    echo "All files found. No need to download."
+    echo "File $DATAFORMAT found. No need to download."
 fi
 
 
@@ -50,36 +46,44 @@ logname=${script#src/}
 log_dir="logs"
 mkdir -p "$log_dir"
 
-# run each script and log output
+
+# # run each script and log output
 for script in "${scripts[@]}"; do
-    log_file="$log_dir/${logname%.py}.log"
+
+    script_base=$(basename "$script" .py)  # 拡張子を除いたファイル名を取得
+    log_file="$log_dir/$script_base.txt"  # 固定のログファイル名を使用
+
     echo "Running $script and logging to $log_file"
+    # PIPEFAILオプションを設定
+    set -o pipefail
+
     python -u "$script" 2>&1 | tee "$log_file"
-    if [ $? -eq 0 ]; then
+    EXIT_CODE=$?
+    if [ $EXIT_CODE -eq 0 ]; then
         echo "$script executed successfully."
     else
-        echo "$script encountered an error. Check $log_file for details."
+        echo "$script encountered an error(Exit code: $EXIT_CODE).. Check $log_file for details."
     fi
 
 done
 
 
-delete_files=true
-for CHECK_FILE_PATH in "${CHECK_FILE_PATHS[@]}"; do
-    if [ ! -f "$CHECK_FILE_PATH" ]; then
-        echo "File $CHECK_FILE_PATH does not exist. Not all files were created."
-        delete_files=false
-        break
-    fi
-done
+# delete_files=true
+# for CHECK_FILE_PATH in "${CHECK_FILE_PATHS[@]}"; do
+#     if [ ! -f "$CHECK_FILE_PATH" ]; then
+#         echo "File $CHECK_FILE_PATH does not exist. Not all files were created."
+#         delete_files=false
+#         break
+#     fi
+# done
 
-if $delete_files; then
-    echo "All files exist. Deleting downloaded file."
-    rm -f "$DATASETS"
-    rm -f "$DATAFORMAT"
-else
-    echo "Some files do not exist. No files deleted."
-fi
+# if $delete_files; then
+#     echo "All files exist. Deleting downloaded file."
+#     rm -f "$DATASETS"
+#     rm -f "$DATAFORMAT"
+# else
+#     echo "Some files do not exist. No files deleted."
+# fi
 
 date=$(date +%Y%m%d)
 

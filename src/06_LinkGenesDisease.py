@@ -32,9 +32,15 @@ def main(config):
     otp_df = get_evidence_otp.get_evidence_otp(common_genes,efoid,2000)
     otp_df.to_csv(f"./results/otp_genes.tsv", sep='\t',index=False)
     # otp_df = pd.read_csv("./results/otp_genes.tsv",sep="\t")
-    mirtex_df = pd.read_csv("./results/mirtex_genes.tsv",sep="\t")
+    try:
+        mirtex_df = pd.read_csv("./results/mirtex_genes.tsv",sep="\t")
+    except:
+        mirtex_df = pd.DataFrame(columns=["gene","PMID_PMCID","evidence"])
     rnadisease_df = pd.read_csv("./results/rnadisease_genes.tsv", sep="\t")
-    disgenet_df = pd.read_csv("./results/disgenet_genes.tsv", sep="\t")
+    try:
+        disgenet_df = pd.read_csv("./results/disgenet_genes.tsv", sep="\t")
+    except:
+        disgenet_df = pd.DataFrame(columns=["gene","PMID_PMCID","evidence"])
     pubchem_df = pd.read_csv("./results/pubchem_genes.tsv", sep="\t")
 
     if not os.path.exists(f"./results/{output_prefix}_bib_genes.tsv"):

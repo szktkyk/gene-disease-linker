@@ -28,7 +28,8 @@ def download_file():
             print(f"Failed to download. Status code: {response.status_code}")
     except Exception as e:
         print(f"An error occurred: {e}")
-    
+
+
 
 def convert_xlsx_to_csv():
     xlsx_file = "./results/rnadisease/RNADiseasev4.0_RNA-disease_experiment_all.xlsx"  
@@ -111,8 +112,11 @@ def rna2ensg():
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
-
-            req2 = json.loads(req.stdout.decode())
+            try:
+                req2 = json.loads(req.stdout.decode())
+            except:
+                print(f"error at {gene}")
+                continue
             # print(req2)
             # req2 = req.stdout.decode("json")
             if req2["total_count"] == 0:
